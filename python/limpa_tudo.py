@@ -5,11 +5,6 @@ import time
 # Funções de limpeza para cada serviço
 # Cada função usa try/except para que um erro em um serviço não pare a execução inteira
 
-
-# Erro provavelmente esta na linha 167 para baixo. Se nao tiver vpcs, da return e sai e nao exclui grupos de seg.
-# Considerar criar funcao apenas para excluir os sgs e criar tambem para par de chaves
-
-
 def cleanup_ec2(ec2_client, region):
     print(f"[{region}] --- Iniciando limpeza de EC2 ---")
     
@@ -184,17 +179,6 @@ def cleanup_vpc_components(ec2_client, region):
             for subnet in subnets:
                 print(f"[{region}] Excluindo Subnet: {subnet['SubnetId']}")
                 ec2_client.delete_subnet(SubnetId=subnet['SubnetId'])
-            
-            # Security Groups (não-padrão)
-            # sgs = ec2_client.describe_security_groups(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])['SecurityGroups']
-            # for sg in sgs:
-            #     if sg['GroupName'] != 'default':
-            #         print(f"[{region}] Excluindo Security Group: {sg['GroupId']}")
-            #         # Tentar remover regras de dependência pode ser complexo, a exclusão pode falhar se houver dependências.
-            #         try:
-            #             ec2_client.delete_security_group(GroupId=sg['GroupId'])
-            #         except Exception as sg_e:
-            #             print(f"[{region}] Falha ao excluir SG {sg['GroupId']} (pode ter dependências): {sg_e}")
 
             # Finalmente, a VPC
             print(f"[{region}] Tentando excluir a VPC: {vpc_id}")
