@@ -186,15 +186,15 @@ def cleanup_vpc_components(ec2_client, region):
                 ec2_client.delete_subnet(SubnetId=subnet['SubnetId'])
             
             # Security Groups (não-padrão)
-            sgs = ec2_client.describe_security_groups(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])['SecurityGroups']
-            for sg in sgs:
-                if sg['GroupName'] != 'default':
-                    print(f"[{region}] Excluindo Security Group: {sg['GroupId']}")
-                    # Tentar remover regras de dependência pode ser complexo, a exclusão pode falhar se houver dependências.
-                    try:
-                        ec2_client.delete_security_group(GroupId=sg['GroupId'])
-                    except Exception as sg_e:
-                        print(f"[{region}] Falha ao excluir SG {sg['GroupId']} (pode ter dependências): {sg_e}")
+            # sgs = ec2_client.describe_security_groups(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])['SecurityGroups']
+            # for sg in sgs:
+            #     if sg['GroupName'] != 'default':
+            #         print(f"[{region}] Excluindo Security Group: {sg['GroupId']}")
+            #         # Tentar remover regras de dependência pode ser complexo, a exclusão pode falhar se houver dependências.
+            #         try:
+            #             ec2_client.delete_security_group(GroupId=sg['GroupId'])
+            #         except Exception as sg_e:
+            #             print(f"[{region}] Falha ao excluir SG {sg['GroupId']} (pode ter dependências): {sg_e}")
 
             # Finalmente, a VPC
             print(f"[{region}] Tentando excluir a VPC: {vpc_id}")
@@ -202,6 +202,43 @@ def cleanup_vpc_components(ec2_client, region):
 
     except Exception as e:
         print(f"[{region}] Erro ao limpar VPCs e seus componentes: {e}")
+
+def cleanup_keypair(ec2_client, region):
+    print(f"[{region}] --- Iniciando limpeza de pares de chave EC2")
+
+    try:
+        keys = ec2_client.describe_key_pairs()
+        print(f"[{region}] Encontrado {len(keys['KeyPairs'])} pares de chave")
+        for key in keys['KeyPairs']:
+            key_name = key['KeyName']
+            try:
+                ec2_client.delete_key_pair(KeyName=key_name)
+                print(f"[{region}] Par de chave deletado: {key_name}")
+            except Exception as e:
+                print(f"[{region}] Erro ao deletar par de chave {key_name}: {e}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar pares de chaves: {e}")
+
+def cleanup_sg(ec2_client, region):
+    print(f"[{region}] --- Iniciando limpeza de grupos de segurança EC2")
+
+    try:
+        sgs = ec2_client.describe_security_groups()
+        print(f"[{region}] Encontrado {len(sgs['SecurityGroups'])} grupos de segurança")
+        for sg in sgs['SecurityGroups']:
+            group_id = sg['GroupId']
+            group_name = sg['GroupName']
+
+            if group_name != 'default':
+                try:
+                    ec2_client.delete_security_group(GroupId=group_id)
+                    print(f"[{region}] Grupo deletado: {group_id} ({group_name})")
+                except Exception as sg_e:
+                    print(f"[{region}] Erro ao deletar grupo {group_id}: {sg_e}")
+            else:
+                print(f"[{region}] Ignorando grupo default: {group_id}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar grupos: {e}")
 
 def lambda_handler(event, context):
     target_regions_str = os.environ.get('TARGET_REGIONS', 'us-east-1,us-east-2')
@@ -227,6 +264,8 @@ def lambda_handler(event, context):
         cleanup_dynamodb(dynamodb_client, region)
         # Limpeza de VPCs e componentes por último, pois dependem que outros recursos sejam removidos
         cleanup_vpc_components(ec2_client, region)
+        cleanup_keypair(ec2_client, region)  # agora antes
+        cleanup_sg(ec2_client, region)
 
     result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}."
     print(f"\n{result_message}")
