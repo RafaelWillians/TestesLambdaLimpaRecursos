@@ -264,7 +264,7 @@ def lambda_handler(event, context):
         cleanup_dynamodb(dynamodb_client, region)
         # Limpeza de VPCs e componentes por último, pois dependem que outros recursos sejam removidos
         cleanup_vpc_components(ec2_client, region)
-        cleanup_keypair(ec2_client, region)  # agora antes
+        cleanup_keypair(ec2_client, region)
         cleanup_sg(ec2_client, region)
 
     result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}."
