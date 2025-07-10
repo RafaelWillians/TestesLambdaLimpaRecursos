@@ -1,3 +1,23 @@
+import boto3
+import os
+import time
+
+def cleanup_keypair(ec2_client, region):
+    print(f"[{region}] --- Iniciando limpeza de pares de chave EC2")
+
+    try:
+        keys = ec2_client.describe_key_pairs()
+        print(f"[{region}] Encontrado {len(keys['KeyPairs'])} pares de chave")
+        for key in keys['KeyPairs']:
+            key_name = key['KeyName']
+            try:
+                ec2_client.delete_key_pair(KeyName=key_name)
+                print(f"[{region}] Par de chave deletado: {key_name}")
+            except Exception as e:
+                print(f"[{region}] Erro ao deletar par de chave {key_name}: {e}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar pares de chaves: {e}")
+
 def cleanup_sg(ec2_client, region):
     print(f"[{region}] --- Iniciando limpeza de grupos de segurança EC2")
 
@@ -19,21 +39,6 @@ def cleanup_sg(ec2_client, region):
     except Exception as e:
         print(f"[{region}] Erro ao listar grupos: {e}")
 
-def cleanup_keypair(ec2_client, region):
-    print(f"[{region}] --- Iniciando limpeza de pares de chave EC2")
-
-    try:
-        keys = ec2_client.describe_key_pairs()
-        print(f"[{region}] Encontrado {len(keys['KeyPairs'])} pares de chave")
-        for key in keys['KeyPairs']:
-            key_name = key['KeyName']
-            try:
-                ec2_client.delete_key_pair(KeyName=key_name)
-                print(f"[{region}] Par de chave deletado: {key_name}")
-            except Exception as e:
-                print(f"[{region}] Erro ao deletar par de chave {key_name}: {e}")
-    except Exception as e:
-        print(f"[{region}] Erro ao listar pares de chaves: {e}")
 
 def lambda_handler(event, context):
     target_regions_str = os.environ.get('TARGET_REGIONS', 'us-east-1,us-east-2')
