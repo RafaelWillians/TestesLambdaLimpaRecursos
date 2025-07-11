@@ -17,6 +17,7 @@ Criar scripts para limpar
 * Buckets S3 (primeiro políticas de buckets, para entao excluir buckets)
 * CloudWatch (grupos de logs exceto das Lambdas de limpeza)
 * Orçamentos do Budgets (executar somente no final de cada curso)
+* IAM (Políticas, Funções, talvez usuários também)
 
 
 ## Criado com AWS Repo Template
