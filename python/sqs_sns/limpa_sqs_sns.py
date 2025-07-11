@@ -8,9 +8,14 @@ def cleanup_sns_subscription(sns_client, region):
     try:
         paginator = sns_client.get_paginator('list_topics')
         for page in paginator.paginate():
+            for topic in page['Topics']:
+                topic_arn = topic['TopicArn']
+                print(f"[{region}] Excluindo tópico: {topic_arn}")
+                try:
+                    sns_client.delete_topic(TopicArn=topic_arn)
+                except Exception as sns_e:
+                    print(f"[{region}] Erro ao excluir tópico SNS {topic_arn}: {sns_e}")
 
-        
-        subs = .describe_
 
 def cleanup_sqs(sqs_client, region):
     print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
@@ -20,11 +25,11 @@ def cleanup_sqs(sqs_client, region):
         queue_urls = queue.get('QueueUrls', [])
 
         for queue_url in queue_urls:
-            print(f"Excluindo fila SQS: {queue_url}")
+            print(f"[{region}] Excluindo fila SQS: {queue_url}")
             try:
                 sqs_client.delete_queue(QueueUrl=queue_url)
             except Exception as sqs_e:
-                print(f"[{region}]Erro ao excluir fila SQS {queue_url}: {sqs_e}")
+                print(f"[{region}] Erro ao excluir fila SQS {queue_url}: {sqs_e}")
     except Exception as e:
         print(f"[{region}] Erro ao listar filas SQS: {e}")
     
