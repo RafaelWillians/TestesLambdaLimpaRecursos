@@ -6,8 +6,29 @@ def cleanup_sns_subscription(sns_client, region):
     print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
 
     try:
+        paginator = sns_client.get_paginator('list_topics')
+        for page in paginator.paginate():
+
         
         subs = .describe_
+
+def cleanup_sqs(sqs_client, region):
+    print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
+
+    try:
+        queues = sqs_client.list_queues()
+        queue_urls = queue.get('QueueUrls', [])
+
+        for queue_url in queue_urls:
+            print(f"Excluindo fila SQS: {queue_url}")
+            try:
+                sqs_client.delete_queue(QueueUrl=queue_url)
+            except Exception as sqs_e:
+                print(f"[{region}]Erro ao excluir fila SQS {queue_url}: {sqs_e}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar filas SQS: {e}")
+    
+
 
 
 
@@ -18,4 +39,13 @@ def lambda_handler(event, context):
     print(f"Iniciando processo de limpeza para as regiões: {regions}")
 
     for region in regions:
-        print(f"")
+        print(f"\n================ PROCESSANDO REGIÃO: {region} ================")
+        sns_client = boto3.client('sns', region_name=region)
+        sqs_client = boto3.client('sqs', region_name=region)
+
+        cleanup_sns(sns_client, region)
+        cleanup_sqs(sqs_client, region)
+
+result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}."
+print(f"\n{result_message}")
+return {'statusCode': 200, 'body': result_message}
