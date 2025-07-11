@@ -2,7 +2,7 @@ import boto3
 import os
 import time
 
-def cleanup_sns_subscription(sns_client, region):
+def cleanup_sns(sns_client, region):
     print(f"[{region}] --- Iniciando limpeza de tópicos do SNS --- ")
 
     try:
