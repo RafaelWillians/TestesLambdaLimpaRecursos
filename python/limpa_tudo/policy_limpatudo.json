@@ -37,6 +37,7 @@
                 "rds:DeleteDBInstance",
                 "lambda:ListFunctions",
                 "lambda:DeleteFunction",
+                "lambda:ListTags",
                 "dynamodb:ListTables",
                 "dynamodb:DeleteTable"
             ],
