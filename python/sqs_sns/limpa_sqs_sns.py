@@ -16,7 +16,6 @@ def cleanup_sns_subscription(sns_client, region):
                 except Exception as sns_e:
                     print(f"[{region}] Erro ao excluir tópico SNS {topic_arn}: {sns_e}")
 
-
 def cleanup_sqs(sqs_client, region):
     print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
 
@@ -32,10 +31,6 @@ def cleanup_sqs(sqs_client, region):
                 print(f"[{region}] Erro ao excluir fila SQS {queue_url}: {sqs_e}")
     except Exception as e:
         print(f"[{region}] Erro ao listar filas SQS: {e}")
-    
-
-
-
 
 def lambda_handler(event, context):
     target_regions_str = os.environ.get('TARGET_REGIONS', 'us-east-1,us-east-2')
