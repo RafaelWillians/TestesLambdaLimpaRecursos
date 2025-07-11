@@ -3,7 +3,7 @@ import os
 import time
 
 def cleanup_sns_subscription(sns_client, region):
-    print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
+    print(f"[{region}] --- Iniciando limpeza de tópicos do SNS --- ")
 
     try:
         paginator = sns_client.get_paginator('list_topics')
@@ -17,7 +17,7 @@ def cleanup_sns_subscription(sns_client, region):
                     print(f"[{region}] Erro ao excluir tópico SNS {topic_arn}: {sns_e}")
 
 def cleanup_sqs(sqs_client, region):
-    print(f"[{region}] --- Iniciando limpeza de assinaturas do SNS")
+    print(f"[{region}] --- Iniciando limpeza de filas do SQS --- ")
 
     try:
         queues = sqs_client.list_queues()
