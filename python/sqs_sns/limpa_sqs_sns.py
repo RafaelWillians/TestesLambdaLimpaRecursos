@@ -15,13 +15,15 @@ def cleanup_sns(sns_client, region):
                     sns_client.delete_topic(TopicArn=topic_arn)
                 except Exception as sns_e:
                     print(f"[{region}] Erro ao excluir tópico SNS {topic_arn}: {sns_e}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar tópicos SNS: {e}")
 
 def cleanup_sqs(sqs_client, region):
     print(f"[{region}] --- Iniciando limpeza de filas do SQS --- ")
 
     try:
         queues = sqs_client.list_queues()
-        queue_urls = queue.get('QueueUrls', [])
+        queue_urls = queues.get('QueueUrls', [])
 
         for queue_url in queue_urls:
             print(f"[{region}] Excluindo fila SQS: {queue_url}")
@@ -46,6 +48,6 @@ def lambda_handler(event, context):
         cleanup_sns(sns_client, region)
         cleanup_sqs(sqs_client, region)
 
-result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}."
-print(f"\n{result_message}")
-return {'statusCode': 200, 'body': result_message}
+    result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}."
+    print(f"\n{result_message}")
+    return {'statusCode': 200, 'body': result_message}
