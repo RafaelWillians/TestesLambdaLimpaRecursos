@@ -15,5 +15,6 @@ def cleanup_eventbridge(, region):
 
         # Tentar excluir
 
+# Depois excluir os Barramentos de Eventos
 
 
