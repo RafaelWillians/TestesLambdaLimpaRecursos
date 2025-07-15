@@ -5,12 +5,28 @@ import time
 def cleanup_sns(sns_client, region):
     print(f"[{region}] --- Iniciando limpeza de tópicos do SNS --- ")
 
+    # Exclui primeiro as assinaturas
+    try:
+        paginator = sns_client.get_paginator('list_subscriptions')
+        for page in paginator.paginate():
+            for subscription in page['Subscriptions']:
+                subscription_arn = subscription['SubscriptionArn']
+                print(f"[{region}] Excluindo assinatura SNS: {subscription_arn}")
+                try:
+                    sns_client.unsubscribe(SubscriptionArn=subscription_arn)
+                except Exception as sns_sub_e:
+                    print(f"[{region}] Erro ao excluir assinatura SNS {subscription_arn}: {sns_sub_e}")
+    except Exception as e:
+        print(f"[{region}] Erro ao listar assinaturas SNS: {e}")
+
+    # Excluir depois os topicos
     try:
         paginator = sns_client.get_paginator('list_topics')
         for page in paginator.paginate():
+
             for topic in page['Topics']:
                 topic_arn = topic['TopicArn']
-                print(f"[{region}] Excluindo tópico: {topic_arn}")
+                print(f"[{region}] Excluindo tópico SNS: {topic_arn}")
                 try:
                     sns_client.delete_topic(TopicArn=topic_arn)
                 except Exception as sns_e:
