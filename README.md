@@ -11,8 +11,6 @@
 Criar scripts para limpar
 * EventBridge (regras primeiro, depois barramentos, exceto as de Lambdas de limpeza e exceto o barramento default)
 * Elastic Beanstalk(talvez ambos ambientes e aplicacoes)
-* SQS
-* SNS
 * IPs elásticos
 * Buckets S3 (primeiro políticas de buckets, para entao excluir buckets)
 * CloudWatch (grupos de logs exceto das Lambdas de limpeza)
