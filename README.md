@@ -9,7 +9,9 @@
 
 ## TODO
 
-Criar scripts para limpar
+Criar tags para essas funções e restringir limpeza de recursos com base nessas tags.
+
+Criar scripts para limpar:
 * EventBridge (regras primeiro, depois barramentos, exceto as de Lambdas de limpeza e exceto o barramento default)
 * Elastic Beanstalk(talvez ambos ambientes e aplicacoes)
 * IPs elásticos
