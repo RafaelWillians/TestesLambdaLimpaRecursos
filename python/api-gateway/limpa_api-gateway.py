@@ -98,7 +98,7 @@ def lambda_handler(event, context):
         apigateway_v2 = boto3.client('apigatewayv2')
 
         cleanup_apiv1(apigateway_v1, region)
-        cleanup_apiv2(apigateway_v1, region)
+        cleanup_apiv2(apigateway_v2, region)
     
     result_message = f"Processo de limpeza de recursos concluído para as regiões: {regions}"
     print(f"\n{result_message}")
