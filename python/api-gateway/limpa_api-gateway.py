@@ -66,7 +66,10 @@ def cleanup_apiv2(apigateway_v2, region):
             # Exclusao stages
             try:
                 stages = apigateway_v2.get_stages(ApiId=api_id)
-                for stage in stages.get('Items', []):
+                stage_items = stages.get('Items', [])
+                if not stage_items:
+                    print(f"[V2] Nenhum stage encontrado para a API {api_name}")
+                for stage in stage_items:
                     stage_name = stage['StageName']
                     print(f"[V2] Excluindo stage: {stage_name}")
                     try: 
