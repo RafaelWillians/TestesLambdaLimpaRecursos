@@ -17,11 +17,27 @@ def cleanup_apiv1(apigateway_v1, region):
             api_name = api.get('name', 'sem nome')
             print(f"[V1] Excluindo API: {api_name} (ID: {api_id})")
 
-            stages = apigateway_v1.get_stages(restApiId=api_id)
-            for stage in stages.get('item', [])
-                stage_name = stage['stageName']
-                print(f"[V1] Excluindo stage: {stage_name}")
-                apigateway_v1.delete_stage(restApiId=api_id, stageName=stage_name)
+            # Exclusao dos stages
+            try:
+                stages = apigateway_v1.get_stages(restApiId=api_id)
+                for stage in stages.get('item', []):
+                    stage_name = stage['stageName']
+                    print(f"[V1] Excluindo stage: {stage_name}")
+                    try: 
+                        apigateway_v1.delete_stage(restApiId=api_id, stageName=stage_name)
+                    except Exception as stage_e:
+                        print(f"[{region}] Erro ao excluir stage {stage_name}: {stage_e}")
+            except Exception as stage_list_e:
+                print(f"[{region}] Erro ao listar stages: {stage_list_e}")
+
+            # Exclusao dos deployments
+            deployments = apigateway_v1.get_deployments(restApiId=api_id)
+            for deployment in deployments.get('items', []):
+    
+    except Exception as e:
+        print(f"[{region}] Erro ao listar APIs: {e}")
+
+
 
 # API Gateway v2
 def cleanup_apiv2(apigateway_v2, region):
