@@ -97,8 +97,8 @@ def lambda_handler(event, context):
 
     for region in regions:
         print(f"\n================ PROCESSANDO REGIÃO: {region} ================")
-        apigateway_v1 = boto3.client('apigateway')
-        apigateway_v2 = boto3.client('apigatewayv2')
+        apigateway_v1 = boto3.client('apigateway', region_name=region)
+        apigateway_v2 = boto3.client('apigatewayv2', region_name=region)
 
         cleanup_apiv1(apigateway_v1, region)
         cleanup_apiv2(apigateway_v2, region)
