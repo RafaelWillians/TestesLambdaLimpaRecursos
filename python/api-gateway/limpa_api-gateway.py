@@ -52,8 +52,6 @@ def cleanup_apiv1(apigateway_v1, region):
     except Exception as e:
         print(f"[{region}] Erro ao listar APIs: {e}")
 
-
-
 # API Gateway v2
 def cleanup_apiv2(apigateway_v2, region):
     print(f"[{region}] --- Iniciando limpeza do API Gateway (v2)")
