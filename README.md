@@ -9,6 +9,7 @@
 ## TODO
 
 Criar scripts para limpar
+* API Gateway
 * EventBridge (regras primeiro, depois barramentos, exceto as de Lambdas de limpeza e exceto o barramento default)
 * Elastic Beanstalk(talvez ambos ambientes e aplicacoes)
 * IPs elásticos
