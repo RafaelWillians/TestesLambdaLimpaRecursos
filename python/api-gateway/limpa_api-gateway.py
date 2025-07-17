@@ -56,7 +56,7 @@ def cleanup_apiv1(apigateway_v1, region):
 def cleanup_apiv2(apigateway_v2, region):
     print(f"[{region}] --- Iniciando limpeza do API Gateway (v2)")
     try: 
-        apis_v2 = apigateway_v2.get_apis()
+        apis_v2 = apigateway_v2.get_apis() #possivel erro aqui
         for api in apis_v2.get('Items', []):
             api_id = api['ApiId']
             api_name = api.get['Name', 'sem nome']
