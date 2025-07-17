@@ -48,15 +48,43 @@ def cleanup_apiv1(apigateway_v1, region):
                 apigateway_v1.delete_rest_api(restApiId=api_id)
                 print(f"[V1] API {api_name} excluída.")
             except Exception as api_e:
-                print(f"[{region}] Erro ao excluir API {api_name}: {api_e}")
+                print(f"[{region}] [V1] Erro ao excluir API {api_name}: {api_e}")
     except Exception as e:
-        print(f"[{region}] Erro ao listar APIs: {e}")
+        print(f"[{region}] [V1] Erro ao listar APIs: {e}")
 
 # API Gateway v2
 def cleanup_apiv2(apigateway_v2, region):
     print(f"[{region}] --- Iniciando limpeza do API Gateway (v2)")
+    try: 
+        apis_v2 = apigateway_v2.get_apis()
+        for api in apis_v2.get('Items', []):
+            api_id = api['ApiId']
+            api_name = api.get['Name', 'sem nome']
+            protocol_type = api.get('ProtocolType', 'unknown')
+            print(f"[V2] Excluindo API {api_name} (ID: {api_id}, Tipo: {protocol_type})")
 
+            # Exclusao stages
+            try:
+                stages = apigateway_v2.get_stages(ApiId=api_id)
+                for stages in stages.get('Items', []):
+                    stage_name = stage['StageName']
+                    print(f"[V2] Excluindo stage: {stage_name}")
+                    try: 
+                        apigateway_v2.delete_stage(ApiId=api_id, StageName=stage_name)
+                    except Exception as stage_e:
+                        print(f"[{region}] [V2] Erro ao excluir stage {stage_name}: {stage_e}")
+            except Exception as stage_list_e:
+                print(f"[{region}] [V2] Erro ao listar stages: {stage_list_e}")
 
+            # Excluir API
+            try:
+                apigateway_v2.delete_api(ApiId=api_id)
+                print(f"[V1] API {api_name} excluída.")
+            except Exception as api_e:
+                print(f"[{region}] [V2] Erro ao excluir API {api_name}: {api_e}")
+
+    except Exception as e:
+        print(f"[{region}] [V2] Erro ao listar APIs: {e}")
 
 def lambda_handler(event, context):
     target_regions_str = os.environ.get('TARGET_REGIONS', 'us-east-1,us-east-2')
