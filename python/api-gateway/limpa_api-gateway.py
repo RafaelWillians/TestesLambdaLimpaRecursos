@@ -2,6 +2,8 @@ import boto3
 import os
 import time
 
+
+# API Gateway v1
 def cleanup_apiv1(apigateway_v1, region):
     print(f"[{region}] --- Iniciando limpeza do API Gateway (v1)")
 
@@ -10,6 +12,18 @@ def cleanup_apiv1(apigateway_v1, region):
         if not apilist['items']:
             print(f"Nenhuma API REST encontrada.")
 
+        for api in apilist.get('items', []):
+            api_id = api['id']
+            api_name = api.get('name', 'sem nome')
+            print(f"[V1] Excluindo API: {api_name} (ID: {api_id})")
+
+            stages = apigateway_v1.get_stages(restApiId=api_id)
+            for stage in stages.get('item', [])
+                stage_name = stage['stageName']
+                print(f"[V1] Excluindo stage: {stage_name}")
+                apigateway_v1.delete_stage(restApiId=api_id, stageName=stage_name)
+
+# API Gateway v2
 def cleanup_apiv2(apigateway_v2, region):
     print(f"[{region}] --- Iniciando limpeza do API Gateway (v2)")
 
