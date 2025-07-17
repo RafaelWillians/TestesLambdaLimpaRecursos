@@ -59,7 +59,7 @@ def cleanup_apiv2(apigateway_v2, region):
         apis_v2 = apigateway_v2.get_apis() #possivel erro aqui
         for api in apis_v2.get('Items', []):
             api_id = api['ApiId']
-            api_name = api.get['Name', 'sem nome']
+            api_name = api.get('Name', 'sem nome')
             protocol_type = api.get('ProtocolType', 'unknown')
             print(f"[V2] Excluindo API {api_name} (ID: {api_id}, Tipo: {protocol_type})")
 
