@@ -5,11 +5,11 @@
 * [Limpa vários recursos](/python/limpa_tudo/limpa_tudo.py)
 * [Limpa SQS e SNS](/python/sqs_sns/limpa_sqs_sns.py)
 * [Limpa EventBridge](/python/eventbridge/limpa_eventbridge.py)
+* [Limpa API Gateway](/python/api-gateway/limpa_api-gateway.py)
 
 ## TODO
 
 Criar scripts para limpar
-* API Gateway
 * EventBridge (regras primeiro, depois barramentos, exceto as de Lambdas de limpeza e exceto o barramento default)
 * Elastic Beanstalk(talvez ambos ambientes e aplicacoes)
 * IPs elásticos
